@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS 611 Cryptography Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .algorithm-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .algorithm-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            color: white;
+        }
+        .algorithm-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+        .algorithm-card h3 {
+            font-size: 1.4em;
+            margin-bottom: 10px;
+        }
+        .algorithm-card p {
+            font-size: 0.95em;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
+        .question-count {
+            display: inline-block;
+            background: rgba(255,255,255,0.3);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-top: 10px;
+        }
+        .info-section {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+        .info-section h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .info-section ul {
+            margin-left: 20px;
+            color: #555;
+        }
+        .info-section li {
+            margin: 8px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 CS 611 Cryptography</h1>
+        <div class="subtitle">Interactive Practice Quiz System</div>
+        
+        <div class="info-section">
+            <h3>📋 Quiz Structure</h3>
+            <ul>
+                <li><strong>25 Questions</strong> covering 8 major cryptographic algorithms</li>
+                <li><strong>Random Parameters</strong> generated for each problem</li>
+                <li><strong>Step-by-step Solutions</strong> with detailed explanations</li>
+                <li><strong>Instant Validation</strong> for each input field</li>
+            </ul>
+        </div>
+
+        <h2 style="text-align: center; color: #2c3e50; margin: 30px 0;">Select Algorithm</h2>
+        
+        <div class="algorithm-grid">
+            <div class="algorithm-card" onclick="window.location.href='rsa.html'">
+                <h3>RSA Encryption</h3>
+                <p>Key Generation, Encryption, Decryption, Small Exponent Challenge</p>
+                <span class="question-count">Questions 1-4</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='diffie-hellman.html'">
+                <h3>Diffie-Hellman</h3>
+                <p>Key Exchange, Attack Simulation, Parameter Validation</p>
+                <span class="question-count">Questions 5-7</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='mqv.html'">
+                <h3>MQV Protocol</h3>
+                <p>Combined Exponent Calculation, Shared Secret Generation</p>
+                <span class="question-count">Questions 8-9</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='dsa.html'">
+                <h3>DSA (Digital Signature)</h3>
+                <p>Signature Generation and Verification Process</p>
+                <span class="question-count">Questions 10-11</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='ecc.html'">
+                <h3>Elliptic Curve (ECC)</h3>
+                <p>Point Doubling, Point Addition, Scalar Multiplication</p>
+                <span class="question-count">Questions 12-15</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='elgamal.html'">
+                <h3>ElGamal Encryption</h3>
+                <p>Encryption and Decryption with Random Parameters</p>
+                <span class="question-count">Questions 16-17</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='cramer-shoup.html'">
+                <h3>Cramer-Shoup</h3>
+                <p>CCA-Secure Encryption and Decryption</p>
+                <span class="question-count">Questions 18-19</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='hash-functions.html'">
+                <h3>Hash Functions</h3>
+                <p>MD5, SHA-256, BLAKE2, HMAC, PBKDF2</p>
+                <span class="question-count">Questions 20-25</span>
+            </div>
+
+            <div class="algorithm-card" onclick="window.location.href='knapsack.html'">
+                <h3>Knapsack Cryptosystem</h3>
+                <p>Subset-Sum Problem, Public Key Generation, Encryption</p>
+                <span class="question-count">Bonus Question</span>
+            </div>
+        </div>
+
+        <div class="info-section" style="margin-top: 40px;">
+            <h3>💡 How to Use</h3>
+            <ul>
+                <li>Click on any algorithm card to start practicing</li>
+                <li>Each question will generate random parameters</li>
+                <li>Fill in the required fields and click "Check Answer" for instant feedback</li>
+                <li>Use "Show Solution" to see detailed step-by-step explanations</li>
+                <li>Click "Generate New Problem" to practice with different values</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

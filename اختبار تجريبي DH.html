@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diffie-Hellman Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .back-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+        .question-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .given-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .required-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .check-btn:hover { background: #5568d3; }
+        .feedback {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .solution-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .solution-section.show { display: block; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Main Menu</a>
+        <h1>🔐 Diffie-Hellman Key Exchange</h1>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">Questions 5-7: Key Exchange, Attack Simulation, Parameter Validation</p>
+
+        <div class="question-selector">
+            <label for="questionSelect"><strong>Select Question:</strong></label>
+            <select id="questionSelect" onchange="loadQuestion()">
+                <option value="5">Q5: Diffie-Hellman Key Exchange</option>
+                <option value="6">Q6: DH Attack Simulation</option>
+                <option value="7">Q7: DH Parameter Validation</option>
+            </select>
+        </div>
+
+        <!-- Question 5: DH Key Exchange -->
+        <div id="q5" class="question-content">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>p = <span id="q5_p"></span></strong> (prime modulus)</p>
+                <p><strong>g = <span id="q5_g"></span></strong> (generator)</p>
+                <p><strong>Alice's private key: a = <span id="q5_a"></span></strong></p>
+                <p><strong>Bob's private key: b = <span id="q5_b"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="input-group">
+                    <label>a) Compute Alice's public key: A = g^a mod p</label>
+                    <div class="input-row">
+                        <input type="number" id="q5_A" placeholder="A = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q5_A')">Check</button>
+                    </div>
+                    <div id="q5_A_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Compute Bob's public key: B = g^b mod p</label>
+                    <div class="input-row">
+                        <input type="number" id="q5_B" placeholder="B = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q5_B')">Check</button>
+                    </div>
+                    <div id="q5_B_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Compute shared secret: K = B^a mod p = A^b mod p</label>
+                    <div class="input-row">
+                        <input type="number" id="q5_K" placeholder="K = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q5_K')">Check</button>
+                    </div>
+                    <div id="q5_K_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 6: Attack Simulation -->
+        <div id="q6" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>p = <span id="q6_p"></span></strong></p>
+                <p><strong>g = <span id="q6_g"></span></strong></p>
+                <p><strong>Alice's public A = <span id="q6_A"></span></strong></p>
+                <p><strong>Bob's public B = <span id="q6_B"></span></strong></p>
+                <p style="margin-top: 10px; color: #e74c3c;"><em>Attacker knows: p, g, A, B (but NOT a or b)</em></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                <div class="input-group">
+                    <label>a) Why can't the attacker compute K directly?</label>
+                    <p style="font-size: 14px; color: #555; margin: 10px 0;">
+                        The attacker needs to solve the <strong>Discrete Logarithm Problem</strong>:<br>
+                        Given A = g^a mod p, find a (or given B = g^b mod p, find b)
+                    </p>
+                </div>
+
+                <div class="input-group">
+                    <label>b) What is the shared secret K? (Try to compute from A and B)</label>
+                    <div class="input-row">
+                        <input type="number" id="q6_K" placeholder="K = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q6_K')">Check</button>
+                    </div>
+                    <div id="q6_K_feedback" class="feedback"></div>
+                    <p style="font-size: 13px; color: #e74c3c; margin-top: 5px;">
+                        Note: Without knowing 'a' or 'b', you cannot compute K = g^(ab) mod p
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 7: Parameter Validation -->
+        <div id="q7" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given Two Scenarios:</h3>
+                <p><strong>Scenario A:</strong> p = <span id="q7_pA"></span>, g = <span id="q7_gA"></span></p>
+                <p><strong>Scenario B:</strong> p = <span id="q7_pB"></span>, g = <span id="q7_gB"></span></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="input-group">
+                    <label>a) Is Scenario A valid? (p must be prime, g must be generator)</label>
+                    <div class="input-row">
+                        <select id="q7_validA" style="flex: 1;">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes, Valid</option>
+                            <option value="no">No, Invalid</option>
+                        </select>
+                        <button class="check-btn" onclick="checkAnswer('q7_validA')">Check</button>
+                    </div>
+                    <div id="q7_validA_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Is Scenario B valid?</label>
+                    <div class="input-row">
+                        <select id="q7_validB" style="flex: 1;">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes, Valid</option>
+                            <option value="no">No, Invalid</option>
+                        </select>
+                        <button class="check-btn" onclick="checkAnswer('q7_validB')">Check</button>
+                    </div>
+                    <div id="q7_validB_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) What's wrong with the invalid scenario?</label>
+                    <div id="q7_explanation" style="padding: 10px; background: #f8f9fa; border-radius: 5px; margin-top: 10px; display: none;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateNewProblem()">🔄 Generate New Problem</button>
+            <button class="btn btn-success" onclick="toggleSolution()">💡 Show/Hide Solution</button>
+        </div>
+
+        <div id="solution" class="solution-section"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 5;
+        let answers = {};
+
+        const smallPrimes = [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+
+        function isPrime(n) {
+            if (n <= 1) return false;
+            if (n <= 3) return true;
+            if (n % 2 === 0 || n % 3 === 0) return false;
+            for (let i = 5; i * i <= n; i += 6) {
+                if (n % i === 0 || n % (i + 2) === 0) return false;
+            }
+            return true;
+        }
+
+        function modPow(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2 === 1) result = (result * base) % mod;
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function isGenerator(g, p) {
+            // Simplified check: g should generate many values
+            let seen = new Set();
+            let current = 1;
+            for (let i = 0; i < p - 1; i++) {
+                current = (current * g) % p;
+                seen.add(current);
+            }
+            return seen.size >= (p - 1) / 2; // At least half
+        }
+
+        function generateNewProblem() {
+            const p = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+            
+            // Find valid generator
+            let g = 2;
+            for (let candidate = 2; candidate < p; candidate++) {
+                if (isGenerator(candidate, p)) {
+                    g = candidate;
+                    break;
+                }
+            }
+
+            const a = Math.floor(Math.random() * (p - 2)) + 2;
+            const b = Math.floor(Math.random() * (p - 2)) + 2;
+            
+            const A = modPow(g, a, p);
+            const B = modPow(g, b, p);
+            const K = modPow(A, b, p);
+
+            // For Q7: Create one valid and one invalid scenario
+            const pA = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+            const gA = 2 + Math.floor(Math.random() * (pA - 2));
+            
+            // Invalid scenario: non-prime p or bad generator
+            const pB = Math.random() > 0.5 ? 15 : 21; // composite numbers
+            const gB = 2;
+
+            const validA = isPrime(pA) && isGenerator(gA, pA);
+            const validB = isPrime(pB) && isGenerator(gB, pB);
+
+            answers = { p, g, a, b, A, B, K, pA, gA, pB, gB, validA, validB };
+
+            // Update UI
+            document.getElementById('q5_p').textContent = p;
+            document.getElementById('q5_g').textContent = g;
+            document.getElementById('q5_a').textContent = a;
+            document.getElementById('q5_b').textContent = b;
+
+            document.getElementById('q6_p').textContent = p;
+            document.getElementById('q6_g').textContent = g;
+            document.getElementById('q6_A').textContent = A;
+            document.getElementById('q6_B').textContent = B;
+
+            document.getElementById('q7_pA').textContent = pA;
+            document.getElementById('q7_gA').textContent = gA;
+            document.getElementById('q7_pB').textContent = pB;
+            document.getElementById('q7_gB').textContent = gB;
+
+            // Clear inputs
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.className = 'feedback';
+                fb.textContent = '';
+            });
+            document.getElementById('solution').classList.remove('show');
+            document.getElementById('q7_explanation').style.display = 'none';
+        }
+
+        function checkAnswer(inputId) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(inputId + '_feedback');
+            
+            let correct = false;
+            let message = '';
+
+            switch(inputId) {
+                case 'q5_A':
+                    const valueA = parseInt(input.value);
+                    correct = valueA === answers.A;
+                    message = correct ? `✓ Correct! A = ${answers.g}^${answers.a} mod ${answers.p} = ${answers.A}` :
+                              `✗ Incorrect. Use: A = g^a mod p`;
+                    break;
+                    
+                case 'q5_B':
+                    const valueB = parseInt(input.value);
+                    correct = valueB === answers.B;
+                    message = correct ? `✓ Correct! B = ${answers.g}^${answers.b} mod ${answers.p} = ${answers.B}` :
+                              `✗ Incorrect. Use: B = g^b mod p`;
+                    break;
+                    
+                case 'q5_K':
+                    const valueK = parseInt(input.value);
+                    correct = valueK === answers.K;
+                    message = correct ? `✓ Correct! K = ${answers.K}` :
+                              `✗ Incorrect. Use: K = B^a mod p (or A^b mod p)`;
+                    break;
+                    
+                case 'q6_K':
+                    feedback.className = 'feedback incorrect';
+                    feedback.textContent = '✗ Cannot compute! This demonstrates why DH is secure: without knowing private keys (a or b), the attacker cannot compute K.';
+                    return;
+                    
+                case 'q7_validA':
+                    const selA = input.value;
+                    correct = (selA === 'yes' && answers.validA) || (selA === 'no' && !answers.validA);
+                    message = correct ? `✓ Correct! Scenario A is ${answers.validA ? 'VALID' : 'INVALID'}` :
+                              `✗ Incorrect. Check if p=${answers.pA} is prime and g=${answers.gA} is a valid generator`;
+                    if (correct) {
+                        const exp = document.getElementById('q7_explanation');
+                        exp.style.display = 'block';
+                        exp.innerHTML = answers.validA ? 
+                            `Scenario A is valid because:<br>• p = ${answers.pA} is prime ✓<br>• g = ${answers.gA} is a valid generator ✓` :
+                            `Scenario A is invalid because:<br>• p = ${answers.pA} is ${isPrime(answers.pA) ? 'prime ✓' : 'NOT prime ✗'}<br>• g = ${answers.gA} is ${isGenerator(answers.gA, answers.pA) ? 'valid ✓' : 'NOT a valid generator ✗'}`;
+                    }
+                    break;
+                    
+                case 'q7_validB':
+                    const selB = input.value;
+                    correct = (selB === 'yes' && answers.validB) || (selB === 'no' && !answers.validB);
+                    message = correct ? `✓ Correct! Scenario B is ${answers.validB ? 'VALID' : 'INVALID'}` :
+                              `✗ Incorrect. Check if p=${answers.pB} is prime`;
+                    if (correct) {
+                        const exp = document.getElementById('q7_explanation');
+                        exp.style.display = 'block';
+                        exp.innerHTML += `<br><br>Scenario B is invalid because:<br>• p = ${answers.pB} is NOT prime (composite number) ✗<br>• For DH to be secure, p must be a large prime number`;
+                    }
+                    break;
+            }
+
+            feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            feedback.textContent = message;
+        }
+
+        function loadQuestion() {
+            currentQuestion = parseInt(document.getElementById('questionSelect').value);
+            document.querySelectorAll('.question-content').forEach(q => q.classList.add('hidden'));
+            document.getElementById('q' + currentQuestion).classList.remove('hidden');
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function toggleSolution() {
+            const sol = document.getElementById('solution');
+            sol.classList.toggle('show');
+            
+            if (sol.classList.contains('show')) {
+                let html = '<h3>📚 Detailed Solution:</h3>';
+                
+                switch(currentQuestion) {
+                    case 5:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Step 1: Alice computes public key A</div>
+                                A = g^a mod p = ${answers.g}^${answers.a} mod ${answers.p} = ${answers.A}
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Step 2: Bob computes public key B</div>
+                                B = g^b mod p = ${answers.g}^${answers.b} mod ${answers.p} = ${answers.B}
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Step 3: Both compute shared secret</div>
+                                Alice: K = B^a mod p = ${answers.B}^${answers.a} mod ${answers.p} = ${answers.K}<br>
+                                Bob: K = A^b mod p = ${answers.A}^${answers.b} mod ${answers.p} = ${answers.K}<br>
+                                Both get the same K = ${answers.K} ✓
+                            </div>`;
+                        break;
+                        
+                    case 6:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Security Analysis</div>
+                                The attacker knows:<br>
+                                • Public parameters: p = ${answers.p}, g = ${answers.g}<br>
+                                • Public keys: A = ${answers.A}, B = ${answers.B}<br><br>
+                                But the attacker does NOT know:<br>
+                                • Alice's private key 'a'<br>
+                                • Bob's private key 'b'
+                            </div>
+                            <div class="step">
+                                <div class="step-title">The Discrete Logarithm Problem</div>
+                                To break DH, the attacker would need to solve:<br>
+                                Given A = g^a mod p, find 'a' (discrete logarithm)<br><br>
+                                This is computationally hard for large primes!<br>
+                                Without 'a' or 'b', cannot compute K = g^(ab) mod p
+                            </div>
+                            <div class="step">
+                                <div class="step-title">The Actual Shared Secret</div>
+                                K = ${answers.K}<br>
+                                (Only Alice and Bob can compute this)
+                            </div>`;
+                        break;
+                        
+                    case 7:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Scenario A Analysis</div>
+                                p = ${answers.pA}: ${isPrime(answers.pA) ? 'Prime ✓' : 'NOT Prime ✗'}<br>
+                                g = ${answers.gA}: ${isGenerator(answers.gA, answers.pA) ? 'Valid generator ✓' : 'Invalid generator ✗'}<br>
+                                <strong>Result: ${answers.validA ? 'VALID' : 'INVALID'}</strong>
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Scenario B Analysis</div>
+                                p = ${answers.pB}: ${isPrime(answers.pB) ? 'Prime ✓' : 'NOT Prime ✗'}<br>
+                                g = ${answers.gB}: ${isGenerator(answers.gB, answers.pB) ? 'Valid generator ✓' : 'Invalid generator ✗'}<br>
+                                <strong>Result: ${answers.validB ? 'VALID' : 'INVALID'}</strong>
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Why Parameter Validation Matters</div>
+                                • p must be a large prime for security<br>
+                                • g must be a generator (primitive root) mod p<br>
+                                • Using composite numbers or bad generators weakens the system
+                            </div>`;
+                        break;
+                }
+                
+                sol.innerHTML = html;
+            }
+        }
+
+        // Initialize
+        generateNewProblem();
+        loadQuestion();
+    </script>
+</body>
+</html>

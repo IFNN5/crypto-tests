@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQV Protocol Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .back-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+        .question-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .given-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .required-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .check-btn:hover { background: #5568d3; }
+        .feedback {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .solution-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .solution-section.show { display: block; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .hidden { display: none; }
+        .info-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Main Menu</a>
+        <h1>🔐 MQV Protocol</h1>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">Questions 8-9: Menezes-Qu-Vanstone Protocol</p>
+
+        <div class="question-selector">
+            <label for="questionSelect"><strong>Select Question:</strong></label>
+            <select id="questionSelect" onchange="loadQuestion()">
+                <option value="8">Q8: MQV Combined Exponent</option>
+                <option value="9">Q9: MQV Shared Secret</option>
+            </select>
+        </div>
+
+        <!-- Question 8: Combined Exponent -->
+        <div id="q8" class="question-content">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>p = <span id="q8_p"></span></strong> (prime modulus)</p>
+                <p><strong>g = <span id="q8_g"></span></strong> (generator)</p>
+                <p><strong>q = <span id="q8_q"></span></strong> (order of g)</p>
+                <hr style="margin: 10px 0; border: 1px solid #ccc;">
+                <p><strong>Alice:</strong></p>
+                <p style="margin-left: 20px;">Static private: a = <span id="q8_a"></span></p>
+                <p style="margin-left: 20px;">Ephemeral private: x = <span id="q8_x"></span></p>
+                <hr style="margin: 10px 0; border: 1px solid #ccc;">
+                <p><strong>Bob:</strong></p>
+                <p style="margin-left: 20px;">Static private: b = <span id="q8_b"></span></p>
+                <p style="margin-left: 20px;">Ephemeral private: y = <span id="q8_y"></span></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="info-box">
+                    <strong>Formulas:</strong><br>
+                    • A = g^a mod p (Alice's static public)<br>
+                    • X = g^x mod p (Alice's ephemeral public)<br>
+                    • B = g^b mod p (Bob's static public)<br>
+                    • Y = g^y mod p (Bob's ephemeral public)<br>
+                    • d = X mod q, e = Y mod q<br>
+                    • S_A = x + d·a (Alice's combined exponent)<br>
+                    • S_B = y + e·b (Bob's combined exponent)
+                </div>
+
+                <div class="input-group">
+                    <label>a) Compute Alice's static public key A = g^a mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_A" placeholder="A = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_A')">Check</button>
+                    </div>
+                    <div id="q8_A_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Compute Alice's ephemeral public key X = g^x mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_X" placeholder="X = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_X')">Check</button>
+                    </div>
+                    <div id="q8_X_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Compute Bob's static public key B = g^b mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_B" placeholder="B = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_B')">Check</button>
+                    </div>
+                    <div id="q8_B_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>d) Compute Bob's ephemeral public key Y = g^y mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_Y" placeholder="Y = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_Y')">Check</button>
+                    </div>
+                    <div id="q8_Y_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>e) Compute d = X mod q:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_d" placeholder="d = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_d')">Check</button>
+                    </div>
+                    <div id="q8_d_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>f) Compute e = Y mod q:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_e" placeholder="e = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_e')">Check</button>
+                    </div>
+                    <div id="q8_e_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>g) Compute Alice's combined exponent S_A = x + d·a:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_SA" placeholder="S_A = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_SA')">Check</button>
+                    </div>
+                    <div id="q8_SA_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>h) Compute Bob's combined exponent S_B = y + e·b:</label>
+                    <div class="input-row">
+                        <input type="number" id="q8_SB" placeholder="S_B = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q8_SB')">Check</button>
+                    </div>
+                    <div id="q8_SB_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 9: Shared Secret -->
+        <div id="q9" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given (from Q8):</h3>
+                <p><strong>p = <span id="q9_p"></span>, g = <span id="q9_g"></span></strong></p>
+                <p><strong>Y = <span id="q9_Y"></span>, B = <span id="q9_B"></span>, e = <span id="q9_e"></span></strong></p>
+                <p><strong>X = <span id="q9_X"></span>, A = <span id="q9_A"></span>, d = <span id="q9_d"></span></strong></p>
+                <p><strong>S_A = <span id="q9_SA"></span>, S_B = <span id="q9_SB"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="info-box">
+                    <strong>Formulas:</strong><br>
+                    • Alice computes: K_A = (Y · B^e)^S_A mod p<br>
+                    • Bob computes: K_B = (X · A^d)^S_B mod p<br>
+                    • Both should get the same K
+                </div>
+
+                <div class="input-group">
+                    <label>a) Alice computes shared secret K_A = (Y · B^e)^S_A mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q9_KA" placeholder="K_A = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q9_KA')">Check</button>
+                    </div>
+                    <div id="q9_KA_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Bob computes shared secret K_B = (X · A^d)^S_B mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q9_KB" placeholder="K_B = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q9_KB')">Check</button>
+                    </div>
+                    <div id="q9_KB_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Verify: K_A = K_B ?</label>
+                    <div class="input-row">
+                        <select id="q9_verify" style="flex: 1;">
+                            <option value="">Select...</option>
+                            <option value="yes">Yes, they match</option>
+                            <option value="no">No, they don't match</option>
+                        </select>
+                        <button class="check-btn" onclick="checkAnswer('q9_verify')">Check</button>
+                    </div>
+                    <div id="q9_verify_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateNewProblem()">🔄 Generate New Problem</button>
+            <button class="btn btn-success" onclick="toggleSolution()">💡 Show/Hide Solution</button>
+        </div>
+
+        <div id="solution" class="solution-section"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 8;
+        let answers = {};
+
+        const smallPrimes = [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+
+        function modPow(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2 === 1) result = (result * base) % mod;
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function findOrder(g, p) {
+            for (let q = 1; q < p; q++) {
+                if (modPow(g, q, p) === 1) {
+                    return q;
+                }
+            }
+            return p - 1;
+        }
+
+        function generateNewProblem() {
+            const p = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+            const g = 2 + Math.floor(Math.random() * (p - 3));
+            const q = findOrder(g, p);
+
+            const a = 2 + Math.floor(Math.random() * 5);
+            const x = 2 + Math.floor(Math.random() * 5);
+            const b = 2 + Math.floor(Math.random() * 5);
+            const y = 2 + Math.floor(Math.random() * 5);
+
+            const A = modPow(g, a, p);
+            const X = modPow(g, x, p);
+            const B = modPow(g, b, p);
+            const Y = modPow(g, y, p);
+
+            const d = X % q;
+            const e = Y % q;
+
+            const SA = x + d * a;
+            const SB = y + e * b;
+
+            // Alice's calculation
+            const temp1 = (Y * modPow(B, e, p)) % p;
+            const KA = modPow(temp1, SA, p);
+
+            // Bob's calculation
+            const temp2 = (X * modPow(A, d, p)) % p;
+            const KB = modPow(temp2, SB, p);
+
+            answers = { p, g, q, a, x, b, y, A, X, B, Y, d, e, SA, SB, KA, KB };
+
+            // Update UI for Q8
+            document.getElementById('q8_p').textContent = p;
+            document.getElementById('q8_g').textContent = g;
+            document.getElementById('q8_q').textContent = q;
+            document.getElementById('q8_a').textContent = a;
+            document.getElementById('q8_x').textContent = x;
+            document.getElementById('q8_b').textContent = b;
+            document.getElementById('q8_y').textContent = y;
+
+            // Update UI for Q9
+            document.getElementById('q9_p').textContent = p;
+            document.getElementById('q9_g').textContent = g;
+            document.getElementById('q9_Y').textContent = Y;
+            document.getElementById('q9_B').textContent = B;
+            document.getElementById('q9_e').textContent = e;
+            document.getElementById('q9_X').textContent = X;
+            document.getElementById('q9_A').textContent = A;
+            document.getElementById('q9_d').textContent = d;
+            document.getElementById('q9_SA').textContent = SA;
+            document.getElementById('q9_SB').textContent = SB;
+
+            // Clear inputs
+            document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+            document.querySelectorAll('select').forEach(select => select.selectedIndex = 0);
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.className = 'feedback';
+                fb.textContent = '';
+            });
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function checkAnswer(inputId) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(inputId + '_feedback');
+            
+            let correct = false;
+            let message = '';
+
+            switch(inputId) {
+                case 'q8_A':
+                    correct = parseInt(input.value) === answers.A;
+                    message = correct ? `✓ Correct! A = ${answers.A}` : 
+                              `✗ Incorrect. A = g^a mod p = ${answers.g}^${answers.a} mod ${answers.p}`;
+                    break;
+                case 'q8_X':
+                    correct = parseInt(input.value) === answers.X;
+                    message = correct ? `✓ Correct! X = ${answers.X}` : 
+                              `✗ Incorrect. X = g^x mod p = ${answers.g}^${answers.x} mod ${answers.p}`;
+                    break;
+                case 'q8_B':
+                    correct = parseInt(input.value) === answers.B;
+                    message = correct ? `✓ Correct! B = ${answers.B}` : 
+                              `✗ Incorrect. B = g^b mod p = ${answers.g}^${answers.b} mod ${answers.p}`;
+                    break;
+                case 'q8_Y':
+                    correct = parseInt(input.value) === answers.Y;
+                    message = correct ? `✓ Correct! Y = ${answers.Y}` : 
+                              `✗ Incorrect. Y = g^y mod p = ${answers.g}^${answers.y} mod ${answers.p}`;
+                    break;
+                case 'q8_d':
+                    correct = parseInt(input.value) === answers.d;
+                    message = correct ? `✓ Correct! d = ${answers.d}` : 
+                              `✗ Incorrect. d = X mod q = ${answers.X} mod ${answers.q}`;
+                    break;
+                case 'q8_e':
+                    correct = parseInt(input.value) === answers.e;
+                    message = correct ? `✓ Correct! e = ${answers.e}` : 
+                              `✗ Incorrect. e = Y mod q = ${answers.Y} mod ${answers.q}`;
+                    break;
+                case 'q8_SA':
+                    correct = parseInt(input.value) === answers.SA;
+                    message = correct ? `✓ Correct! S_A = ${answers.SA}` : 
+                              `✗ Incorrect. S_A = x + d·a = ${answers.x} + ${answers.d}·${answers.a}`;
+                    break;
+                case 'q8_SB':
+                    correct = parseInt(input.value) === answers.SB;
+                    message = correct ? `✓ Correct! S_B = ${answers.SB}` : 
+                              `✗ Incorrect. S_B = y + e·b = ${answers.y} + ${answers.e}·${answers.b}`;
+                    break;
+                case 'q9_KA':
+                    correct = parseInt(input.value) === answers.KA;
+                    message = correct ? `✓ Correct! K_A = ${answers.KA}` : 
+                              `✗ Incorrect. K_A = (Y · B^e)^S_A mod p`;
+                    break;
+                case 'q9_KB':
+                    correct = parseInt(input.value) === answers.KB;
+                    message = correct ? `✓ Correct! K_B = ${answers.KB}` : 
+                              `✗ Incorrect. K_B = (X · A^d)^S_B mod p`;
+                    break;
+                case 'q9_verify':
+                    const match = answers.KA === answers.KB;
+                    correct = input.value === (match ? 'yes' : 'no');
+                    message = correct ? `✓ Correct! K_A = K_B = ${answers.KA} ✓` : 
+                              `✗ Incorrect. Compare K_A and K_B values`;
+                    break;
+            }
+
+            feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            feedback.textContent = message;
+        }
+
+        function loadQuestion() {
+            currentQuestion = parseInt(document.getElementById('questionSelect').value);
+            document.querySelectorAll('.question-content').forEach(q => q.classList.add('hidden'));
+            document.getElementById('q' + currentQuestion).classList.remove('hidden');
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function toggleSolution() {
+            const sol = document.getElementById('solution');
+            sol.classList.toggle('show');
+            
+            if (sol.classList.contains('show')) {
+                let html = '<h3>📚 Detailed Solution:</h3>';
+                
+                if (currentQuestion === 8) {
+                    html += `
+                        <div class="step">
+                            <div class="step-title">Step 1: Compute Static Public Keys</div>
+                            A = g^a mod p = ${answers.g}^${answers.a} mod ${answers.p} = ${answers.A}<br>
+                            B = g^b mod p = ${answers.g}^${answers.b} mod ${answers.p} = ${answers.B}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 2: Compute Ephemeral Public Keys</div>
+                            X = g^x mod p = ${answers.g}^${answers.x} mod ${answers.p} = ${answers.X}<br>
+                            Y = g^y mod p = ${answers.g}^${answers.y} mod ${answers.p} = ${answers.Y}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 3: Compute Combined Values</div>
+                            d = X mod q = ${answers.X} mod ${answers.q} = ${answers.d}<br>
+                            e = Y mod q = ${answers.Y} mod ${answers.q} = ${answers.e}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 4: Compute Combined Exponents</div>
+                            S_A = x + d·a = ${answers.x} + ${answers.d}·${answers.a} = ${answers.SA}<br>
+                            S_B = y + e·b = ${answers.y} + ${answers.e}·${answers.b} = ${answers.SB}
+                        </div>`;
+                } else {
+                    const temp1 = (answers.Y * modPow(answers.B, answers.e, answers.p)) % answers.p;
+                    const temp2 = (answers.X * modPow(answers.A, answers.d, answers.p)) % answers.p;
+                    
+                    html += `
+                        <div class="step">
+                            <div class="step-title">Step 1: Alice Computes Shared Secret</div>
+                            K_A = (Y · B^e)^S_A mod p<br>
+                            K_A = (${answers.Y} · ${answers.B}^${answers.e})^${answers.SA} mod ${answers.p}<br>
+                            K_A = (${answers.Y} · ${modPow(answers.B, answers.e, answers.p)})^${answers.SA} mod ${answers.p}<br>
+                            K_A = ${temp1}^${answers.SA} mod ${answers.p}<br>
+                            K_A = ${answers.KA}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 2: Bob Computes Shared Secret</div>
+                            K_B = (X · A^d)^S_B mod p<br>
+                            K_B = (${answers.X} · ${answers.A}^${answers.d})^${answers.SB} mod ${answers.p}<br>
+                            K_B = (${answers.X} · ${modPow(answers.A, answers.d, answers.p)})^${answers.SB} mod ${answers.p}<br>
+                            K_B = ${temp2}^${answers.SB} mod ${answers.p}<br>
+                            K_B = ${answers.KB}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 3: Verification</div>
+                            K_A = ${answers.KA}<br>
+                            K_B = ${answers.KB}<br>
+                            <strong>${answers.KA === answers.KB ? '✓ Keys Match! MQV successful' : '✗ Keys do not match'}</strong>
+                        </div>`;
+                }
+                
+                sol.innerHTML = html;
+            }
+        }
+
+        // Initialize
+        generateNewProblem();
+        loadQuestion();
+    </script>
+</body>
+</html>

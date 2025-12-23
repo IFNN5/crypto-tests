@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cramer-Shoup Cryptosystem Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .back-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+        .question-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .given-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .required-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .check-btn:hover { background: #5568d3; }
+        .feedback {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .solution-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .solution-section.show { display: block; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .hidden { display: none; }
+        .info-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Main Menu</a>
+        <h1>🔐 Cramer-Shoup Cryptosystem</h1>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">Questions 18-19: CCA-Secure Encryption</p>
+
+        <div class="question-selector">
+            <label for="questionSelect"><strong>Select Question:</strong></label>
+            <select id="questionSelect" onchange="loadQuestion()">
+                <option value="18">Q18: Cramer-Shoup Encryption</option>
+                <option value="19">Q19: Cramer-Shoup Decryption & Verification</option>
+            </select>
+        </div>
+
+        <!-- Question 18: Encryption -->
+        <div id="q18" class="question-content">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>p = <span id="q18_p"></span></strong> (prime)</p>
+                <p><strong>g₁ = <span id="q18_g1"></span>, g₂ = <span id="q18_g2"></span></strong> (generators)</p>
+                <p><strong>Public Key:</strong></p>
+                <p style="margin-left: 20px;">c = <span id="q18_c"></span></p>
+                <p style="margin-left: 20px;">d = <span id="q18_d"></span></p>
+                <p style="margin-left: 20px;">h = <span id="q18_h"></span></p>
+                <p><strong>Message m = <span id="q18_m"></span></strong></p>
+                <p><strong>Random r = <span id="q18_r"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="info-box">
+                    <strong>Cramer-Shoup Encryption:</strong><br>
+                    • u₁ = g₁^r mod p<br>
+                    • u₂ = g₂^r mod p<br>
+                    • e = h^r · m mod p<br>
+                    • α = Hash(u₁, u₂, e) (simplified: α = (u₁ + u₂ + e) mod p)<br>
+                    • v = c^r · d^(r·α) mod p<br>
+                    <br>
+                    Ciphertext = (u₁, u₂, e, v)
+                </div>
+
+                <div class="input-group">
+                    <label>a) Compute u₁ = g₁^r mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q18_u1" placeholder="u₁ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q18_u1')">Check</button>
+                    </div>
+                    <div id="q18_u1_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Compute u₂ = g₂^r mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q18_u2" placeholder="u₂ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q18_u2')">Check</button>
+                    </div>
+                    <div id="q18_u2_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Compute e = h^r · m mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q18_e" placeholder="e = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q18_e')">Check</button>
+                    </div>
+                    <div id="q18_e_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>d) Compute α = (u₁ + u₂ + e) mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q18_alpha" placeholder="α = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q18_alpha')">Check</button>
+                    </div>
+                    <div id="q18_alpha_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>e) Compute v = c^r · d^(r·α) mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q18_v" placeholder="v = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q18_v')">Check</button>
+                    </div>
+                    <div id="q18_v_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 19: Decryption -->
+        <div id="q19" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given (from Q18):</h3>
+                <p><strong>p = <span id="q19_p"></span></strong></p>
+                <p><strong>Private Key: x₁ = <span id="q19_x1"></span>, x₂ = <span id="q19_x2"></span>, y₁ = <span id="q19_y1"></span>, y₂ = <span id="q19_y2"></span>, z = <span id="q19_z"></span></strong></p>
+                <p><strong>Ciphertext:</strong></p>
+                <p style="margin-left: 20px;">u₁ = <span id="q19_u1"></span></p>
+                <p style="margin-left: 20px;">u₂ = <span id="q19_u2"></span></p>
+                <p style="margin-left: 20px;">e = <span id="q19_e"></span></p>
+                <p style="margin-left: 20px;">v = <span id="q19_v"></span></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="info-box">
+                    <strong>Cramer-Shoup Decryption:</strong><br>
+                    1. Verify: α = (u₁ + u₂ + e) mod p<br>
+                    2. Check: v = u₁^(y₁ + z·α) · u₂^y₂ mod p<br>
+                    3. If valid: m = e / (u₁^x₁ · u₂^x₂) mod p
+                </div>
+
+                <div class="input-group">
+                    <label>a) Compute α = (u₁ + u₂ + e) mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q19_alpha" placeholder="α = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q19_alpha')">Check</button>
+                    </div>
+                    <div id="q19_alpha_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Verify v = u₁^(y₁ + z·α) · u₂^y₂ mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q19_check" placeholder="Compute right side = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q19_check')">Check</button>
+                    </div>
+                    <div id="q19_check_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Decrypt: m = e / (u₁^x₁ · u₂^x₂) mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q19_m" placeholder="m = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q19_m')">Check</button>
+                    </div>
+                    <div id="q19_m_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateNewProblem()">🔄 Generate New Problem</button>
+            <button class="btn btn-success" onclick="toggleSolution()">💡 Show/Hide Solution</button>
+        </div>
+
+        <div id="solution" class="solution-section"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 18;
+        let answers = {};
+
+        const smallPrimes = [23, 29, 31, 37, 41, 43, 47];
+
+        function modPow(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2 === 1) result = (result * base) % mod;
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function modInverse(a, m) {
+            let m0 = m, t, q;
+            let x0 = 0, x1 = 1;
+            if (m === 1) return 0;
+            a = ((a % m) + m) % m;
+            while (a > 1) {
+                q = Math.floor(a / m);
+                t = m;
+                m = a % m;
+                a = t;
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+            if (x1 < 0) x1 += m0;
+            return x1;
+        }
+
+        function generateNewProblem() {
+            const p = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+            const g1 = 2 + Math.floor(Math.random() * 3);
+            const g2 = g1 + 1 + Math.floor(Math.random() * 2);
+
+            // Private key components
+            const x1 = 2 + Math.floor(Math.random() * 3);
+            const x2 = 2 + Math.floor(Math.random() * 3);
+            const y1 = 2 + Math.floor(Math.random() * 3);
+            const y2 = 2 + Math.floor(Math.random() * 3);
+            const z = 2 + Math.floor(Math.random() * 3);
+
+            // Public key
+            const h = (modPow(g1, x1, p) * modPow(g2, x2, p)) % p;
+            const c = (modPow(g1, y1, p) * modPow(g2, y2, p)) % p;
+            const d = modPow(g1, z, p);
+
+            // Message and random
+            const m = 2 + Math.floor(Math.random() * (p / 2));
+            const r = 2 + Math.floor(Math.random() * 4);
+
+            // Encryption
+            const u1 = modPow(g1, r, p);
+            const u2 = modPow(g2, r, p);
+            const e = (modPow(h, r, p) * m) % p;
+            const alpha = (u1 + u2 + e) % p;
+            const v = (modPow(c, r, p) * modPow(d, (r * alpha), p)) % p;
+
+            // Decryption
+            const exp_verify = y1 + z * alpha;
+            const verify = (modPow(u1, exp_verify, p) * modPow(u2, y2, p)) % p;
+            const denominator = (modPow(u1, x1, p) * modPow(u2, x2, p)) % p;
+            const m_decrypted = (e * modInverse(denominator, p)) % p;
+
+            answers = {
+                p, g1, g2, x1, x2, y1, y2, z,
+                h, c, d, m, r,
+                u1, u2, e, alpha, v,
+                verify, m_decrypted
+            };
+
+            // Update UI for Q18
+            document.getElementById('q18_p').textContent = p;
+            document.getElementById('q18_g1').textContent = g1;
+            document.getElementById('q18_g2').textContent = g2;
+            document.getElementById('q18_c').textContent = c;
+            document.getElementById('q18_d').textContent = d;
+            document.getElementById('q18_h').textContent = h;
+            document.getElementById('q18_m').textContent = m;
+            document.getElementById('q18_r').textContent = r;
+
+            // Update UI for Q19
+            document.getElementById('q19_p').textContent = p;
+            document.getElementById('q19_x1').textContent = x1;
+            document.getElementById('q19_x2').textContent = x2;
+            document.getElementById('q19_y1').textContent = y1;
+            document.getElementById('q19_y2').textContent = y2;
+            document.getElementById('q19_z').textContent = z;
+            document.getElementById('q19_u1').textContent = u1;
+            document.getElementById('q19_u2').textContent = u2;
+            document.getElementById('q19_e').textContent = e;
+            document.getElementById('q19_v').textContent = v;
+
+            // Clear inputs
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.className = 'feedback';
+                fb.textContent = '';
+            });
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function checkAnswer(inputId) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(inputId + '_feedback');
+            
+            let correct = false;
+            let message = '';
+
+            switch(inputId) {
+                case 'q18_u1':
+                    correct = parseInt(input.value) === answers.u1;
+                    message = correct ? `✓ Correct! u₁ = ${answers.u1}` :
+                              `✗ Incorrect. u₁ = g₁^r mod p`;
+                    break;
+                    
+                case 'q18_u2':
+                    correct = parseInt(input.value) === answers.u2;
+                    message = correct ? `✓ Correct! u₂ = ${answers.u2}` :
+                              `✗ Incorrect. u₂ = g₂^r mod p`;
+                    break;
+                    
+                case 'q18_e':
+                    correct = parseInt(input.value) === answers.e;
+                    message = correct ? `✓ Correct! e = ${answers.e}` :
+                              `✗ Incorrect. e = h^r · m mod p`;
+                    break;
+                    
+                case 'q18_alpha':
+                    correct = parseInt(input.value) === answers.alpha;
+                    message = correct ? `✓ Correct! α = ${answers.alpha}` :
+                              `✗ Incorrect. α = (u₁ + u₂ + e) mod p`;
+                    break;
+                    
+                case 'q18_v':
+                    correct = parseInt(input.value) === answers.v;
+                    message = correct ? `✓ Correct! v = ${answers.v}` :
+                              `✗ Incorrect. v = c^r · d^(r·α) mod p`;
+                    break;
+                    
+                case 'q19_alpha':
+                    correct = parseInt(input.value) === answers.alpha;
+                    message = correct ? `✓ Correct! α = ${answers.alpha}` :
+                              `✗ Incorrect. α = (u₁ + u₂ + e) mod p`;
+                    break;
+                    
+                case 'q19_check':
+                    correct = parseInt(input.value) === answers.verify;
+                    message = correct ? `✓ Correct! Verification value = ${answers.verify} (matches v = ${answers.v} ${answers.verify === answers.v ? '✓' : '✗'})` :
+                              `✗ Incorrect. Compute u₁^(y₁ + z·α) · u₂^y₂ mod p`;
+                    break;
+                    
+                case 'q19_m':
+                    correct = parseInt(input.value) === answers.m_decrypted;
+                    message = correct ? `✓ Correct! m = ${answers.m_decrypted} (matches original!)` :
+                              `✗ Incorrect. m = e / (u₁^x₁ · u₂^x₂) mod p`;
+                    break;
+            }
+
+            feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            feedback.textContent = message;
+        }
+
+        function loadQuestion() {
+            currentQuestion = parseInt(document.getElementById('questionSelect').value);
+            document.querySelectorAll('.question-content').forEach(q => q.classList.add('hidden'));
+            document.getElementById('q' + currentQuestion).classList.remove('hidden');
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function toggleSolution() {
+            const sol = document.getElementById('solution');
+            sol.classList.toggle('show');
+            
+            if (sol.classList.contains('show')) {
+                let html = '<h3>📚 Detailed Solution:</h3>';
+                
+                if (currentQuestion === 18) {
+                    html += `
+                        <div class="step">
+                            <div class="step-title">Step 1: Compute u₁ and u₂</div>
+                            u₁ = g₁^r mod p = ${answers.g1}^${answers.r} mod ${answers.p} = ${answers.u1}<br>
+                            u₂ = g₂^r mod p = ${answers.g2}^${answers.r} mod ${answers.p} = ${answers.u2}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 2: Compute encrypted message e</div>
+                            e = h^r · m mod p = ${answers.h}^${answers.r} · ${answers.m} mod ${answers.p}<br>
+                            e = ${modPow(answers.h, answers.r, answers.p)} · ${answers.m} mod ${answers.p} = ${answers.e}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 3: Compute hash α</div>
+                            α = (u₁ + u₂ + e) mod p = (${answers.u1} + ${answers.u2} + ${answers.e}) mod ${answers.p} = ${answers.alpha}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 4: Compute verification value v</div>
+                            v = c^r · d^(r·α) mod p<br>
+                            v = ${answers.c}^${answers.r} · ${answers.d}^(${answers.r}·${answers.alpha}) mod ${answers.p}<br>
+                            v = ${modPow(answers.c, answers.r, answers.p)} · ${modPow(answers.d, answers.r * answers.alpha, answers.p)} mod ${answers.p} = ${answers.v}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Final Ciphertext</div>
+                            Ciphertext = (u₁, u₂, e, v) = (${answers.u1}, ${answers.u2}, ${answers.e}, ${answers.v})
+                        </div>`;
+                } else {
+                    const exp_verify = answers.y1 + answers.z * answers.alpha;
+                    html += `
+                        <div class="step">
+                            <div class="step-title">Step 1: Recompute α</div>
+                            α = (u₁ + u₂ + e) mod p = (${answers.u1} + ${answers.u2} + ${answers.e}) mod ${answers.p} = ${answers.alpha}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 2: Verify Ciphertext Validity</div>
+                            Check: v = u₁^(y₁ + z·α) · u₂^y₂ mod p<br>
+                            Right side = ${answers.u1}^(${answers.y1} + ${answers.z}·${answers.alpha}) · ${answers.u2}^${answers.y2} mod ${answers.p}<br>
+                            Right side = ${answers.u1}^${exp_verify} · ${answers.u2}^${answers.y2} mod ${answers.p}<br>
+                            Right side = ${modPow(answers.u1, exp_verify, answers.p)} · ${modPow(answers.u2, answers.y2, answers.p)} mod ${answers.p} = ${answers.verify}<br>
+                            v = ${answers.v}<br>
+                            <strong>${answers.verify === answers.v ? '✓ Valid Ciphertext!' : '✗ Invalid - possible tampering!'}</strong>
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 3: Decrypt Message</div>
+                            Compute: u₁^x₁ · u₂^x₂ = ${answers.u1}^${answers.x1} · ${answers.u2}^${answers.x2} mod ${answers.p}<br>
+                            = ${modPow(answers.u1, answers.x1, answers.p)} · ${modPow(answers.u2, answers.x2, answers.p)} mod ${answers.p}<br>
+                            = ${(modPow(answers.u1, answers.x1, answers.p) * modPow(answers.u2, answers.x2, answers.p)) % answers.p}<br><br>
+                            m = e / (u₁^x₁ · u₂^x₂) mod p = ${answers.m_decrypted}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Verification</div>
+                            Original message: ${answers.m}<br>
+                            Decrypted message: ${answers.m_decrypted}<br>
+                            <strong>${answers.m === answers.m_decrypted ? '✓ Decryption Successful!' : '✗ Error'}</strong>
+                        </div>`;
+                }
+                
+                sol.innerHTML = html;
+            }
+        }
+
+        generateNewProblem();
+        loadQuestion();
+    </script>
+</body>
+</html>

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knapsack Cryptosystem Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .back-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+        .given-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .required-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="text"], input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .check-btn:hover { background: #5568d3; }
+        .feedback {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .solution-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .solution-section.show { display: block; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .array-display {
+            font-family: 'Courier New', monospace;
+            background: #f0f0f0;
+            padding: 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Main Menu</a>
+        <h1>🎒 Knapsack Cryptosystem</h1>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">Subset-Sum Based Public Key Encryption</p>
+
+        <div class="given-section">
+            <h3>📌 Given:</h3>
+            <p><strong>N = <span id="N"></span></strong> (multiplier)</p>
+            <p><strong>M = <span id="M"></span></strong> (modulus)</p>
+            <p><strong>S = <span id="S" class="array-display"></span></strong> (superincreasing sequence)</p>
+        </div>
+        
+        <div class="required-section">
+            <h3>✏️ Required:</h3>
+            
+            <div class="input-group">
+                <label>1. Compute Bob's public key T:</label>
+                <p style="font-size: 14px; color: #555; margin: 5px 0;">
+                    T[i] = (N × S[i]) mod M for each element
+                </p>
+                <div class="input-row">
+                    <input type="text" id="publicKey" placeholder="Enter as comma-separated values: e.g., 10,20,30,..." />
+                    <button class="check-btn" onclick="checkAnswer('publicKey')">Check</button>
+                </div>
+                <div id="publicKey_feedback" class="feedback"></div>
+            </div>
+
+            <div class="input-group">
+                <label>2. Encrypt binary message M' = <span id="message" class="array-display"></span></label>
+                <p style="font-size: 14px; color: #555; margin: 5px 0;">
+                    C = Σ(T[i] × M'[i]) where M'[i] is the i-th bit
+                </p>
+                <div class="input-row">
+                    <input type="number" id="ciphertext" placeholder="C = ?" />
+                    <button class="check-btn" onclick="checkAnswer('ciphertext')">Check</button>
+                </div>
+                <div id="ciphertext_feedback" class="feedback"></div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateNewProblem()">🔄 Generate New Problem</button>
+            <button class="btn btn-success" onclick="toggleSolution()">💡 Show/Hide Solution</button>
+        </div>
+
+        <div id="solution" class="solution-section"></div>
+    </div>
+
+    <script>
+        let answers = {};
+
+        function gcd(a, b) {
+            while (b !== 0) {
+                let temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        function isSuperincreasing(arr) {
+            let sum = arr[0];
+            for (let i = 1; i < arr.length; i++) {
+                if (arr[i] <= sum) return false;
+                sum += arr[i];
+            }
+            return true;
+        }
+
+        function generateSuperincreasing(length) {
+            let seq = [Math.floor(Math.random() * 3) + 2]; // Start with 2-4
+            for (let i = 1; i < length; i++) {
+                let sum = seq.reduce((a, b) => a + b, 0);
+                seq.push(sum + Math.floor(Math.random() * 5) + 1);
+            }
+            return seq;
+        }
+
+        function generateNewProblem() {
+            // Generate superincreasing sequence S
+            const S = generateSuperincreasing(5);
+            const sumS = S.reduce((a, b) => a + b, 0);
+            
+            // M must be greater than sum of S
+            const M = sumS + Math.floor(Math.random() * 20) + 10;
+            
+            // N must be coprime with M
+            let N = Math.floor(Math.random() * 20) + 20;
+            while (gcd(N, M) !== 1) {
+                N++;
+            }
+
+            // Compute public key T
+            const T = S.map(s => (N * s) % M);
+
+            // Generate random binary message
+            const message = Array(5).fill(0).map(() => Math.floor(Math.random() * 2));
+            
+            // Compute ciphertext
+            let C = 0;
+            for (let i = 0; i < message.length; i++) {
+                C += T[i] * message[i];
+            }
+
+            answers = { N, M, S, T, message, C };
+
+            // Update UI
+            document.getElementById('N').textContent = N;
+            document.getElementById('M').textContent = M;
+            document.getElementById('S').textContent = '[' + S.join(', ') + ']';
+            document.getElementById('message').textContent = '[' + message.join(', ') + ']';
+
+            // Clear inputs
+            document.getElementById('publicKey').value = '';
+            document.getElementById('ciphertext').value = '';
+            
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.className = 'feedback';
+                fb.textContent = '';
+            });
+            
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function checkAnswer(inputId) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(inputId + '_feedback');
+            
+            let correct = false;
+            let message = '';
+
+            switch(inputId) {
+                case 'publicKey':
+                    const inputArray = input.value.split(',').map(x => parseInt(x.trim()));
+                    const expectedT = answers.T;
+                    
+                    correct = inputArray.length === expectedT.length && 
+                              inputArray.every((val, idx) => val === expectedT[idx]);
+                    
+                    if (correct) {
+                        message = `✓ Correct! T = [${expectedT.join(', ')}]`;
+                    } else {
+                        message = `✗ Incorrect. Remember: T[i] = (N × S[i]) mod M for each element`;
+                    }
+                    break;
+                    
+                case 'ciphertext':
+                    const valueC = parseInt(input.value);
+                    correct = valueC === answers.C;
+                    
+                    if (correct) {
+                        message = `✓ Correct! C = ${answers.C}`;
+                    } else {
+                        message = `✗ Incorrect. C = Σ(T[i] × M'[i]) for all i where M'[i] = 1`;
+                    }
+                    break;
+            }
+
+            feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            feedback.textContent = message;
+        }
+
+        function toggleSolution() {
+            const sol = document.getElementById('solution');
+            sol.classList.toggle('show');
+            
+            if (sol.classList.contains('show')) {
+                let html = '<h3>📚 Detailed Solution:</h3>';
+                
+                html += `
+                    <div class="step">
+                        <div class="step-title">Step 1: Verify Superincreasing Sequence</div>
+                        S = [${answers.S.join(', ')}]<br>
+                        Check: Each element > sum of all previous elements ✓
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Step 2: Compute Public Key T</div>
+                        For each S[i], compute T[i] = (N × S[i]) mod M<br><br>`;
+                
+                for (let i = 0; i < answers.S.length; i++) {
+                    html += `T[${i}] = (${answers.N} × ${answers.S[i]}) mod ${answers.M} = ${answers.N * answers.S[i]} mod ${answers.M} = ${answers.T[i]}<br>`;
+                }
+                
+                html += `<br><strong>Public Key T = [${answers.T.join(', ')}]</strong>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Step 3: Encrypt Message M' = [${answers.message.join(', ')}]</div>
+                        C = Σ(T[i] × M'[i]) for all i<br><br>
+                        C = `;
+                
+                let terms = [];
+                for (let i = 0; i < answers.message.length; i++) {
+                    if (answers.message[i] === 1) {
+                        terms.push(`T[${i}]`);
+                    }
+                }
+                
+                if (terms.length === 0) {
+                    html += `0 (no bits set to 1)`;
+                } else {
+                    html += terms.join(' + ') + '<br>C = ';
+                    let values = [];
+                    for (let i = 0; i < answers.message.length; i++) {
+                        if (answers.message[i] === 1) {
+                            values.push(answers.T[i]);
+                        }
+                    }
+                    html += values.join(' + ') + ' = ' + answers.C;
+                }
+                
+                html += `
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-title">Key Concepts</div>
+                        • <strong>Private Key:</strong> Superincreasing sequence S<br>
+                        • <strong>Public Key:</strong> Transformed sequence T<br>
+                        • <strong>Security:</strong> Based on subset-sum problem (NP-complete)<br>
+                        • <strong>Note:</strong> Knapsack cryptosystem is broken and not used in practice
+                    </div>`;
+                
+                sol.innerHTML = html;
+            }
+        }
+
+        // Initialize
+        generateNewProblem();
+    </script>
+</body>
+</html>

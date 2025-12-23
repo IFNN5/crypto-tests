@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elliptic Curve Cryptography Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .back-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+        .question-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .given-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .required-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .check-btn:hover { background: #5568d3; }
+        .feedback {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .solution-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .solution-section.show { display: block; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .hidden { display: none; }
+        .info-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Main Menu</a>
+        <h1>📈 Elliptic Curve Cryptography (ECC)</h1>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">Questions 12-15: Point Operations and ECDH</p>
+
+        <div class="question-selector">
+            <label for="questionSelect"><strong>Select Question:</strong></label>
+            <select id="questionSelect" onchange="loadQuestion()">
+                <option value="12">Q12: ECC Point Doubling (2P)</option>
+                <option value="13">Q13: ECC Point Addition (P+Q)</option>
+                <option value="14">Q14: ECC Scalar Multiplication (3P)</option>
+                <option value="15">Q15: ECDH Shared Secret</option>
+            </select>
+        </div>
+
+        <!-- Question 12: Point Doubling -->
+        <div id="q12" class="question-content">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>Curve: y² = x³ + <span id="q12_a"></span>x + <span id="q12_b"></span> (mod <span id="q12_p"></span>)</strong></p>
+                <p><strong>Point P = (<span id="q12_px"></span>, <span id="q12_py"></span>)</strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required: Compute 2P</h3>
+                
+                <div class="info-box">
+                    <strong>Point Doubling Formula:</strong><br>
+                    m = (3x₁² + a) / (2y₁) mod p<br>
+                    x₃ = m² - 2x₁ mod p<br>
+                    y₃ = m(x₁ - x₃) - y₁ mod p
+                </div>
+
+                <div class="input-group">
+                    <label>2P = (x₃, y₃) where:</label>
+                    <div class="input-row">
+                        <input type="number" id="q12_x3" placeholder="x₃ = ?" />
+                        <input type="number" id="q12_y3" placeholder="y₃ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q12_result')">Check</button>
+                    </div>
+                    <div id="q12_result_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 13: Point Addition -->
+        <div id="q13" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>Curve: y² = x³ + <span id="q13_a"></span>x + <span id="q13_b"></span> (mod <span id="q13_p"></span>)</strong></p>
+                <p><strong>Point P = (<span id="q13_px"></span>, <span id="q13_py"></span>)</strong></p>
+                <p><strong>Point Q = (<span id="q13_qx"></span>, <span id="q13_qy"></span>)</strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required: Compute P + Q</h3>
+                
+                <div class="info-box">
+                    <strong>Point Addition Formula:</strong><br>
+                    m = (y₂ - y₁) / (x₂ - x₁) mod p<br>
+                    x₃ = m² - x₁ - x₂ mod p<br>
+                    y₃ = m(x₁ - x₃) - y₁ mod p
+                </div>
+
+                <div class="input-group">
+                    <label>P + Q = (x₃, y₃) where:</label>
+                    <div class="input-row">
+                        <input type="number" id="q13_x3" placeholder="x₃ = ?" />
+                        <input type="number" id="q13_y3" placeholder="y₃ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q13_result')">Check</button>
+                    </div>
+                    <div id="q13_result_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 14: Scalar Multiplication -->
+        <div id="q14" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>Curve: y² = x³ + <span id="q14_a"></span>x + <span id="q14_b"></span> (mod <span id="q14_p"></span>)</strong></p>
+                <p><strong>Point P = (<span id="q14_px"></span>, <span id="q14_py"></span>)</strong></p>
+                <p><strong>Scalar k = 3</strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required: Compute 3P using double-and-add</h3>
+                
+                <div class="info-box">
+                    <strong>Method:</strong><br>
+                    3P = 2P + P<br>
+                    First compute 2P (point doubling), then add P
+                </div>
+
+                <div class="input-group">
+                    <label>3P = (x₃, y₃) where:</label>
+                    <div class="input-row">
+                        <input type="number" id="q14_x3" placeholder="x₃ = ?" />
+                        <input type="number" id="q14_y3" placeholder="y₃ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q14_result')">Check</button>
+                    </div>
+                    <div id="q14_result_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 15: ECDH -->
+        <div id="q15" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>Curve: y² = x³ + <span id="q15_a"></span>x + <span id="q15_b"></span> (mod <span id="q15_p"></span>)</strong></p>
+                <p><strong>Base Point P = (<span id="q15_px"></span>, <span id="q15_py"></span>)</strong></p>
+                <p><strong>Alice's private key: a = <span id="q15_ka"></span></strong></p>
+                <p><strong>Bob's private key: b = <span id="q15_kb"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required: ECDH Shared Secret</h3>
+                
+                <div class="info-box">
+                    <strong>ECDH Process:</strong><br>
+                    • Alice computes: A = aP<br>
+                    • Bob computes: B = bP<br>
+                    • Shared secret: K = abP = a(bP) = b(aP)
+                </div>
+
+                <div class="input-group">
+                    <label>a) Alice's public key A = aP:</label>
+                    <div class="input-row">
+                        <input type="number" id="q15_ax" placeholder="A.x = ?" />
+                        <input type="number" id="q15_ay" placeholder="A.y = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q15_A')">Check</button>
+                    </div>
+                    <div id="q15_A_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Bob's public key B = bP:</label>
+                    <div class="input-row">
+                        <input type="number" id="q15_bx" placeholder="B.x = ?" />
+                        <input type="number" id="q15_by" placeholder="B.y = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q15_B')">Check</button>
+                    </div>
+                    <div id="q15_B_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Shared secret K = abP:</label>
+                    <div class="input-row">
+                        <input type="number" id="q15_kx" placeholder="K.x = ?" />
+                        <input type="number" id="q15_ky" placeholder="K.y = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q15_K')">Check</button>
+                    </div>
+                    <div id="q15_K_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateNewProblem()">🔄 Generate New Problem</button>
+            <button class="btn btn-success" onclick="toggleSolution()">💡 Show/Hide Solution</button>
+        </div>
+
+        <div id="solution" class="solution-section"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 12;
+        let answers = {};
+
+        function modInverse(a, m) {
+            let m0 = m, t, q;
+            let x0 = 0, x1 = 1;
+            if (m === 1) return 0;
+            a = ((a % m) + m) % m;
+            while (a > 1) {
+                q = Math.floor(a / m);
+                t = m;
+                m = a % m;
+                a = t;
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+            if (x1 < 0) x1 += m0;
+            return x1;
+        }
+
+        function mod(n, m) {
+            return ((n % m) + m) % m;
+        }
+
+        function pointDouble(P, a, p) {
+            if (!P) return null;
+            const [x1, y1] = P;
+            
+            const numerator = mod(3 * x1 * x1 + a, p);
+            const denominator = mod(2 * y1, p);
+            const m = mod(numerator * modInverse(denominator, p), p);
+            
+            const x3 = mod(m * m - 2 * x1, p);
+            const y3 = mod(m * (x1 - x3) - y1, p);
+            
+            return [x3, y3];
+        }
+
+        function pointAdd(P, Q, a, p) {
+            if (!P) return Q;
+            if (!Q) return P;
+            
+            const [x1, y1] = P;
+            const [x2, y2] = Q;
+            
+            if (x1 === x2) {
+                if (y1 === y2) return pointDouble(P, a, p);
+                return null;
+            }
+            
+            const numerator = mod(y2 - y1, p);
+            const denominator = mod(x2 - x1, p);
+            const m = mod(numerator * modInverse(denominator, p), p);
+            
+            const x3 = mod(m * m - x1 - x2, p);
+            const y3 = mod(m * (x1 - x3) - y1, p);
+            
+            return [x3, y3];
+        }
+
+        function scalarMult(k, P, a, p) {
+            if (k === 0) return null;
+            if (k === 1) return P;
+            if (k === 2) return pointDouble(P, a, p);
+            
+            let result = null;
+            let temp = P;
+            
+            while (k > 0) {
+                if (k % 2 === 1) {
+                    result = result ? pointAdd(result, temp, a, p) : temp;
+                }
+                temp = pointDouble(temp, a, p);
+                k = Math.floor(k / 2);
+            }
+            
+            return result;
+        }
+
+        function generateNewProblem() {
+            const curves = [
+                {p: 17, a: 0, b: 7},
+                {p: 23, a: 1, b: 4},
+                {p: 19, a: 2, b: 3}
+            ];
+            
+            const curve = curves[Math.floor(Math.random() * curves.length)];
+            const {p, a, b} = curve;
+            
+            // Find valid points on curve
+            const points = [];
+            for (let x = 0; x < p; x++) {
+                const ySquared = mod(x * x * x + a * x + b, p);
+                for (let y = 0; y < p; y++) {
+                    if (mod(y * y, p) === ySquared) {
+                        points.push([x, y]);
+                    }
+                }
+            }
+            
+            const P = points[Math.floor(Math.random() * points.length)];
+            const Q = points[Math.floor(Math.random() * points.length)];
+            
+            const result2P = pointDouble(P, a, p);
+            const resultPQ = pointAdd(P, Q, a, p);
+            const result3P = scalarMult(3, P, a, p);
+            
+            // ECDH
+            const ka = 2 + Math.floor(Math.random() * 3);
+            const kb = 2 + Math.floor(Math.random() * 3);
+            const A = scalarMult(ka, P, a, p);
+            const B = scalarMult(kb, P, a, p);
+            const K = scalarMult(ka, B, a, p);
+            
+            answers = {
+                p, a, b, P, Q,
+                result2P, resultPQ, result3P,
+                ka, kb, A, B, K
+            };
+
+            // Update UI for all questions
+            ['q12', 'q13', 'q14', 'q15'].forEach(qid => {
+                document.getElementById(qid + '_a').textContent = a;
+                document.getElementById(qid + '_b').textContent = b;
+                document.getElementById(qid + '_p').textContent = p;
+            });
+            
+            document.getElementById('q12_px').textContent = P[0];
+            document.getElementById('q12_py').textContent = P[1];
+            
+            document.getElementById('q13_px').textContent = P[0];
+            document.getElementById('q13_py').textContent = P[1];
+            document.getElementById('q13_qx').textContent = Q[0];
+            document.getElementById('q13_qy').textContent = Q[1];
+            
+            document.getElementById('q14_px').textContent = P[0];
+            document.getElementById('q14_py').textContent = P[1];
+            
+            document.getElementById('q15_px').textContent = P[0];
+            document.getElementById('q15_py').textContent = P[1];
+            document.getElementById('q15_ka').textContent = ka;
+            document.getElementById('q15_kb').textContent = kb;
+
+            // Clear inputs
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.className = 'feedback';
+                fb.textContent = '';
+            });
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function checkAnswer(inputId) {
+            const feedback = document.getElementById(inputId + '_feedback');
+            let correct = false;
+            let message = '';
+
+            switch(inputId) {
+                case 'q12_result':
+                    const x12 = parseInt(document.getElementById('q12_x3').value);
+                    const y12 = parseInt(document.getElementById('q12_y3').value);
+                    correct = answers.result2P && x12 === answers.result2P[0] && y12 === answers.result2P[1];
+                    message = correct ? `✓ Correct! 2P = (${answers.result2P[0]}, ${answers.result2P[1]})` :
+                              `✗ Incorrect. Use point doubling formula`;
+                    break;
+                    
+                case 'q13_result':
+                    const x13 = parseInt(document.getElementById('q13_x3').value);
+                    const y13 = parseInt(document.getElementById('q13_y3').value);
+                    correct = answers.resultPQ && x13 === answers.resultPQ[0] && y13 === answers.resultPQ[1];
+                    message = correct ? `✓ Correct! P+Q = (${answers.resultPQ[0]}, ${answers.resultPQ[1]})` :
+                              `✗ Incorrect. Use point addition formula`;
+                    break;
+                    
+                case 'q14_result':
+                    const x14 = parseInt(document.getElementById('q14_x3').value);
+                    const y14 = parseInt(document.getElementById('q14_y3').value);
+                    correct = answers.result3P && x14 === answers.result3P[0] && y14 === answers.result3P[1];
+                    message = correct ? `✓ Correct! 3P = (${answers.result3P[0]}, ${answers.result3P[1]})` :
+                              `✗ Incorrect. Compute 2P first, then add P`;
+                    break;
+                    
+                case 'q15_A':
+                    const ax = parseInt(document.getElementById('q15_ax').value);
+                    const ay = parseInt(document.getElementById('q15_ay').value);
+                    correct = answers.A && ax === answers.A[0] && ay === answers.A[1];
+                    message = correct ? `✓ Correct! A = (${answers.A[0]}, ${answers.A[1]})` :
+                              `✗ Incorrect. A = ${answers.ka}P`;
+                    break;
+                    
+                case 'q15_B':
+                    const bx = parseInt(document.getElementById('q15_bx').value);
+                    const by = parseInt(document.getElementById('q15_by').value);
+                    correct = answers.B && bx === answers.B[0] && by === answers.B[1];
+                    message = correct ? `✓ Correct! B = (${answers.B[0]}, ${answers.B[1]})` :
+                              `✗ Incorrect. B = ${answers.kb}P`;
+                    break;
+                    
+                case 'q15_K':
+                    const kx = parseInt(document.getElementById('q15_kx').value);
+                    const ky = parseInt(document.getElementById('q15_ky').value);
+                    correct = answers.K && kx === answers.K[0] && ky === answers.K[1];
+                    message = correct ? `✓ Correct! K = (${answers.K[0]}, ${answers.K[1]})` :
+                              `✗ Incorrect. K = ${answers.ka}×B or ${answers.kb}×A`;
+                    break;
+            }
+
+            feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            feedback.textContent = message;
+        }
+
+        function loadQuestion() {
+            currentQuestion = parseInt(document.getElementById('questionSelect').value);
+            document.querySelectorAll('.question-content').forEach(q => q.classList.add('hidden'));
+            document.getElementById('q' + currentQuestion).classList.remove('hidden');
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function toggleSolution() {
+            const sol = document.getElementById('solution');
+            sol.classList.toggle('show');
+            
+            if (sol.classList.contains('show')) {
+                let html = '<h3>📚 Detailed Solution:</h3>';
+                const {p, a, P} = answers;
+                
+                switch(currentQuestion) {
+                    case 12:
+                        const [x1, y1] = P;
+                        const num = mod(3 * x1 * x1 + a, p);
+                        const den = mod(2 * y1, p);
+                        const denInv = modInverse(den, p);
+                        const m = mod(num * denInv, p);
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Step 1: Calculate slope m</div>
+                                m = (3x₁² + a) / (2y₁) mod p<br>
+                                m = (3·${x1}² + ${a}) / (2·${y1}) mod ${p}<br>
+                                m = ${num} / ${den} mod ${p}<br>
+                                m = ${num} · ${denInv} mod ${p} = ${m}
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Step 2: Calculate x₃</div>
+                                x₃ = m² - 2x₁ mod p = ${m}² - 2·${x1} mod ${p} = ${answers.result2P[0]}
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Step 3: Calculate y₃</div>
+                                y₃ = m(x₁ - x₃) - y₁ mod p = ${m}(${x1} - ${answers.result2P[0]}) - ${y1} mod ${p} = ${answers.result2P[1]}
+                            </div>`;
+                        break;
+                        
+                    case 13:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Point Addition P + Q</div>
+                                P = (${P[0]}, ${P[1]})<br>
+                                Q = (${answers.Q[0]}, ${answers.Q[1]})<br>
+                                Result: (${answers.resultPQ[0]}, ${answers.resultPQ[1]})
+                            </div>`;
+                        break;
+                        
+                    case 14:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">3P = 2P + P</div>
+                                First: 2P = (${answers.result2P[0]}, ${answers.result2P[1]})<br>
+                                Then: 3P = 2P + P = (${answers.result3P[0]}, ${answers.result3P[1]})
+                            </div>`;
+                        break;
+                        
+                    case 15:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">ECDH Key Exchange</div>
+                                Alice: A = ${answers.ka}P = (${answers.A[0]}, ${answers.A[1]})<br>
+                                Bob: B = ${answers.kb}P = (${answers.B[0]}, ${answers.B[1]})<br>
+                                Shared: K = ${answers.ka}B = ${answers.kb}A = (${answers.K[0]}, ${answers.K[1]})
+                            </div>`;
+                        break;
+                }
+                
+                sol.innerHTML = html;
+            }
+        }
+
+        generateNewProblem();
+        loadQuestion();
+    </script>
+</body>
+</html>

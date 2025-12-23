@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSA Encryption Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .back-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+        .question-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .given-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .required-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .check-btn:hover { background: #5568d3; }
+        .feedback {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .solution-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .solution-section.show { display: block; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Main Menu</a>
+        <h1>🔐 RSA Encryption</h1>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">Questions 1-4: Key Generation, Encryption, Decryption, Small Exponent</p>
+
+        <div class="question-selector">
+            <label for="questionSelect"><strong>Select Question:</strong></label>
+            <select id="questionSelect" onchange="loadQuestion()">
+                <option value="1">Q1: RSA Key Generation</option>
+                <option value="2">Q2: RSA Encryption</option>
+                <option value="3">Q3: RSA Decryption</option>
+                <option value="4">Q4: Small Exponent Challenge</option>
+            </select>
+        </div>
+
+        <!-- Question 1: Key Generation -->
+        <div id="q1" class="question-content">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>p = <span id="q1_p"></span></strong></p>
+                <p><strong>q = <span id="q1_q"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="input-group">
+                    <label>a) Compute n and φ(n):</label>
+                    <div class="input-row">
+                        <input type="number" id="q1_n" placeholder="n = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q1_n')">Check</button>
+                    </div>
+                    <div id="q1_n_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <div class="input-row">
+                        <input type="number" id="q1_phi" placeholder="φ(n) = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q1_phi')">Check</button>
+                    </div>
+                    <div id="q1_phi_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Choose valid e (must be coprime with φ(n)):</label>
+                    <div class="input-row">
+                        <input type="number" id="q1_e" placeholder="e = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q1_e')">Check</button>
+                    </div>
+                    <div id="q1_e_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Compute d (modular inverse of e):</label>
+                    <div class="input-row">
+                        <input type="number" id="q1_d" placeholder="d = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q1_d')">Check</button>
+                    </div>
+                    <div id="q1_d_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 2: Encryption -->
+        <div id="q2" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given (from Q1):</h3>
+                <p><strong>n = <span id="q2_n"></span></strong></p>
+                <p><strong>e = <span id="q2_e"></span></strong></p>
+                <p><strong>Message M = <span id="q2_m"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                <div class="input-group">
+                    <label>Encrypt: C = M^e mod n</label>
+                    <div class="input-row">
+                        <input type="number" id="q2_c" placeholder="C = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q2_c')">Check</button>
+                    </div>
+                    <div id="q2_c_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 3: Decryption -->
+        <div id="q3" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given (from Q2):</h3>
+                <p><strong>n = <span id="q3_n"></span></strong></p>
+                <p><strong>d = <span id="q3_d"></span></strong></p>
+                <p><strong>Ciphertext C = <span id="q3_c"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                <div class="input-group">
+                    <label>Decrypt: M = C^d mod n</label>
+                    <div class="input-row">
+                        <input type="number" id="q3_m" placeholder="M = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q3_m')">Check</button>
+                    </div>
+                    <div id="q3_m_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 4: Small Exponent -->
+        <div id="q4" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>e = 3</strong></p>
+                <p><strong>C = <span id="q4_c"></span></strong></p>
+                <p><strong>n = <span id="q4_n"></span></strong></p>
+                <p style="margin-top: 10px; color: #e74c3c;"><em>Note: Message is small enough that M³ < n</em></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                <div class="input-group">
+                    <label>Recover M without private key (hint: cube root):</label>
+                    <div class="input-row">
+                        <input type="number" id="q4_m" placeholder="M = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q4_m')">Check</button>
+                    </div>
+                    <div id="q4_m_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateNewProblem()">🔄 Generate New Problem</button>
+            <button class="btn btn-success" onclick="toggleSolution()">💡 Show/Hide Solution</button>
+        </div>
+
+        <div id="solution" class="solution-section"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 1;
+        let answers = {};
+
+        // Prime numbers for random selection
+        const smallPrimes = [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+
+        function gcd(a, b) {
+            while (b !== 0) {
+                let temp = b;
+                b = a % b;
+                a = temp;
+            }
+            return a;
+        }
+
+        function modInverse(e, phi) {
+            let m0 = phi, t, q;
+            let x0 = 0, x1 = 1;
+            if (phi === 1) return 0;
+            while (e > 1) {
+                q = Math.floor(e / phi);
+                t = phi;
+                phi = e % phi;
+                e = t;
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+            if (x1 < 0) x1 += m0;
+            return x1;
+        }
+
+        function modPow(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2 === 1) result = (result * base) % mod;
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function generateNewProblem() {
+            const p = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+            let q = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+            while (q === p) q = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+
+            const n = p * q;
+            const phi = (p - 1) * (q - 1);
+
+            // Find valid e
+            let e = 0;
+            const possibleE = [3, 5, 7, 11, 13, 17];
+            for (let candidate of possibleE) {
+                if (candidate < phi && gcd(candidate, phi) === 1) {
+                    e = candidate;
+                    break;
+                }
+            }
+
+            const d = modInverse(e, phi);
+            const m = Math.floor(Math.random() * (n / 2)) + 2;
+            const c = modPow(m, e, n);
+
+            // For Q4: small exponent attack
+            const m_small = Math.floor(Math.pow(n, 1/3)) - Math.floor(Math.random() * 5) - 1;
+            const c_small = Math.pow(m_small, 3);
+            const n_large = c_small * 2 + Math.floor(Math.random() * 100);
+
+            answers = { p, q, n, phi, e, d, m, c, m_small, c_small, n_large };
+
+            // Update UI
+            document.getElementById('q1_p').textContent = p;
+            document.getElementById('q1_q').textContent = q;
+            
+            document.getElementById('q2_n').textContent = n;
+            document.getElementById('q2_e').textContent = e;
+            document.getElementById('q2_m').textContent = m;
+
+            document.getElementById('q3_n').textContent = n;
+            document.getElementById('q3_d').textContent = d;
+            document.getElementById('q3_c').textContent = c;
+
+            document.getElementById('q4_c').textContent = c_small;
+            document.getElementById('q4_n').textContent = n_large;
+
+            // Clear inputs
+            document.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.className = 'feedback';
+                fb.textContent = '';
+            });
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function checkAnswer(inputId) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(inputId + '_feedback');
+            const value = parseInt(input.value);
+
+            let correct = false;
+            let message = '';
+
+            switch(inputId) {
+                case 'q1_n':
+                    correct = value === answers.n;
+                    message = correct ? '✓ Correct! n = p × q = ' + answers.n : 
+                              '✗ Incorrect. Remember: n = p × q';
+                    break;
+                case 'q1_phi':
+                    correct = value === answers.phi;
+                    message = correct ? '✓ Correct! φ(n) = (p-1)(q-1) = ' + answers.phi :
+                              '✗ Incorrect. Remember: φ(n) = (p-1)(q-1)';
+                    break;
+                case 'q1_e':
+                    const isValid = value > 1 && value < answers.phi && gcd(value, answers.phi) === 1;
+                    correct = isValid;
+                    message = correct ? '✓ Valid! gcd(' + value + ', ' + answers.phi + ') = 1' :
+                              '✗ Invalid! Must satisfy: 1 < e < φ(n) and gcd(e, φ(n)) = 1';
+                    if (correct) answers.e = value; // Update e if valid
+                    break;
+                case 'q1_d':
+                    const expectedD = modInverse(answers.e, answers.phi);
+                    correct = value === expectedD;
+                    message = correct ? '✓ Correct! d = ' + expectedD :
+                              '✗ Incorrect. d must satisfy: (e × d) ≡ 1 (mod φ(n))';
+                    break;
+                case 'q2_c':
+                    correct = value === answers.c;
+                    message = correct ? '✓ Correct! C = ' + answers.c :
+                              '✗ Incorrect. Use: C = M^e mod n';
+                    break;
+                case 'q3_m':
+                    correct = value === answers.m;
+                    message = correct ? '✓ Correct! M = ' + answers.m :
+                              '✗ Incorrect. Use: M = C^d mod n';
+                    break;
+                case 'q4_m':
+                    correct = value === answers.m_small;
+                    message = correct ? '✓ Correct! M = ' + answers.m_small :
+                              '✗ Incorrect. Hint: Since M³ < n, try cube root of C';
+                    break;
+            }
+
+            feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            feedback.textContent = message;
+        }
+
+        function loadQuestion() {
+            currentQuestion = parseInt(document.getElementById('questionSelect').value);
+            document.querySelectorAll('.question-content').forEach(q => q.classList.add('hidden'));
+            document.getElementById('q' + currentQuestion).classList.remove('hidden');
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function toggleSolution() {
+            const sol = document.getElementById('solution');
+            sol.classList.toggle('show');
+            
+            if (sol.classList.contains('show')) {
+                let html = '<h3>📚 Detailed Solution:</h3>';
+                
+                switch(currentQuestion) {
+                    case 1:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Step 1: Compute n</div>
+                                n = p × q = ${answers.p} × ${answers.q} = ${answers.n}
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Step 2: Compute φ(n)</div>
+                                φ(n) = (p-1)(q-1) = (${answers.p}-1)(${answers.q}-1) = ${answers.p-1} × ${answers.q-1} = ${answers.phi}
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Step 3: Choose e</div>
+                                Valid e values must satisfy:<br>
+                                • 1 < e < φ(n)<br>
+                                • gcd(e, φ(n)) = 1<br>
+                                Example: e = ${answers.e} (gcd(${answers.e}, ${answers.phi}) = 1 ✓)
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Step 4: Compute d</div>
+                                Find d such that: (e × d) ≡ 1 (mod φ(n))<br>
+                                Using Extended Euclidean Algorithm:<br>
+                                d = ${answers.d}<br>
+                                Verify: (${answers.e} × ${answers.d}) mod ${answers.phi} = ${(answers.e * answers.d) % answers.phi} ✓
+                            </div>`;
+                        break;
+                    case 2:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Encryption Formula</div>
+                                C = M^e mod n
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Calculation</div>
+                                C = ${answers.m}^${answers.e} mod ${answers.n}<br>
+                                C = ${answers.c}
+                            </div>`;
+                        break;
+                    case 3:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Decryption Formula</div>
+                                M = C^d mod n
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Calculation</div>
+                                M = ${answers.c}^${answers.d} mod ${answers.n}<br>
+                                M = ${answers.m}
+                            </div>`;
+                        break;
+                    case 4:
+                        html += `
+                            <div class="step">
+                                <div class="step-title">Attack Explanation</div>
+                                When e=3 and message is small (M³ < n):<br>
+                                C = M³ mod n = M³ (no modular reduction occurs)
+                            </div>
+                            <div class="step">
+                                <div class="step-title">Recovery Method</div>
+                                Since C = M³, we can simply compute:<br>
+                                M = ∛C = ∛${answers.c_small} = ${answers.m_small}
+                            </div>`;
+                        break;
+                }
+                
+                sol.innerHTML = html;
+            }
+        }
+
+        // Initialize
+        generateNewProblem();
+        loadQuestion();
+    </script>
+</body>
+</html>

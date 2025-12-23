@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElGamal Encryption Quiz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .back-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #95a5a6;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover { background: #7f8c8d; }
+        .question-selector {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .given-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #2196f3;
+        }
+        .required-section {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #ff9800;
+        }
+        .input-group {
+            margin: 15px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .input-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .check-btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .check-btn:hover { background: #5568d3; }
+        .feedback {
+            margin-top: 5px;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .feedback.incorrect {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-primary:hover { background: #5568d3; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #218838; }
+        .solution-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .solution-section.show { display: block; }
+        .step {
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .hidden { display: none; }
+        .info-box {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="index.html" class="back-btn">← Back to Main Menu</a>
+        <h1>🔐 ElGamal Encryption</h1>
+        <p style="color: #7f8c8d; margin-bottom: 20px;">Questions 16-17: Encryption & Decryption</p>
+
+        <div class="question-selector">
+            <label for="questionSelect"><strong>Select Question:</strong></label>
+            <select id="questionSelect" onchange="loadQuestion()">
+                <option value="16">Q16: ElGamal Encryption</option>
+                <option value="17">Q17: ElGamal Decryption</option>
+            </select>
+        </div>
+
+        <!-- Question 16: Encryption -->
+        <div id="q16" class="question-content">
+            <div class="given-section">
+                <h3>📌 Given:</h3>
+                <p><strong>p = <span id="q16_p"></span></strong> (prime)</p>
+                <p><strong>g = <span id="q16_g"></span></strong> (generator)</p>
+                <p><strong>x = <span id="q16_x"></span></strong> (Bob's private key)</p>
+                <p><strong>Message m = <span id="q16_m"></span></strong></p>
+                <p><strong>Random k = <span id="q16_k"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="info-box">
+                    <strong>ElGamal Encryption:</strong><br>
+                    • Public key: h = g^x mod p<br>
+                    • Ciphertext: (c₁, c₂) where:<br>
+                    &nbsp;&nbsp;- c₁ = g^k mod p<br>
+                    &nbsp;&nbsp;- c₂ = m · h^k mod p
+                </div>
+
+                <div class="input-group">
+                    <label>a) Compute public key h = g^x mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q16_h" placeholder="h = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q16_h')">Check</button>
+                    </div>
+                    <div id="q16_h_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Compute c₁ = g^k mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q16_c1" placeholder="c₁ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q16_c1')">Check</button>
+                    </div>
+                    <div id="q16_c1_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Compute c₂ = m · h^k mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q16_c2" placeholder="c₂ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q16_c2')">Check</button>
+                    </div>
+                    <div id="q16_c2_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Question 17: Decryption -->
+        <div id="q17" class="question-content hidden">
+            <div class="given-section">
+                <h3>📌 Given (from Q16):</h3>
+                <p><strong>p = <span id="q17_p"></span></strong></p>
+                <p><strong>x = <span id="q17_x"></span></strong> (Bob's private key)</p>
+                <p><strong>Ciphertext: c₁ = <span id="q17_c1"></span>, c₂ = <span id="q17_c2"></span></strong></p>
+            </div>
+            
+            <div class="required-section">
+                <h3>✏️ Required:</h3>
+                
+                <div class="info-box">
+                    <strong>ElGamal Decryption:</strong><br>
+                    • Compute s = c₁^x mod p<br>
+                    • Compute m = c₂ · s⁻¹ mod p<br>
+                    (where s⁻¹ is modular inverse of s)
+                </div>
+
+                <div class="input-group">
+                    <label>a) Compute s = c₁^x mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q17_s" placeholder="s = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q17_s')">Check</button>
+                    </div>
+                    <div id="q17_s_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>b) Compute s⁻¹ mod p (modular inverse):</label>
+                    <div class="input-row">
+                        <input type="number" id="q17_sinv" placeholder="s⁻¹ = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q17_sinv')">Check</button>
+                    </div>
+                    <div id="q17_sinv_feedback" class="feedback"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>c) Decrypt: m = c₂ · s⁻¹ mod p:</label>
+                    <div class="input-row">
+                        <input type="number" id="q17_m" placeholder="m = ?" />
+                        <button class="check-btn" onclick="checkAnswer('q17_m')">Check</button>
+                    </div>
+                    <div id="q17_m_feedback" class="feedback"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-primary" onclick="generateNewProblem()">🔄 Generate New Problem</button>
+            <button class="btn btn-success" onclick="toggleSolution()">💡 Show/Hide Solution</button>
+        </div>
+
+        <div id="solution" class="solution-section"></div>
+    </div>
+
+    <script>
+        let currentQuestion = 16;
+        let answers = {};
+
+        const smallPrimes = [11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+
+        function modPow(base, exp, mod) {
+            let result = 1;
+            base = base % mod;
+            while (exp > 0) {
+                if (exp % 2 === 1) result = (result * base) % mod;
+                exp = Math.floor(exp / 2);
+                base = (base * base) % mod;
+            }
+            return result;
+        }
+
+        function modInverse(a, m) {
+            let m0 = m, t, q;
+            let x0 = 0, x1 = 1;
+            if (m === 1) return 0;
+            a = ((a % m) + m) % m;
+            while (a > 1) {
+                q = Math.floor(a / m);
+                t = m;
+                m = a % m;
+                a = t;
+                t = x0;
+                x0 = x1 - q * x0;
+                x1 = t;
+            }
+            if (x1 < 0) x1 += m0;
+            return x1;
+        }
+
+        function generateNewProblem() {
+            const p = smallPrimes[Math.floor(Math.random() * smallPrimes.length)];
+            const g = 2 + Math.floor(Math.random() * (p - 3));
+            const x = 2 + Math.floor(Math.random() * 5);
+            const k = 2 + Math.floor(Math.random() * 5);
+            const m = 2 + Math.floor(Math.random() * (p - 3));
+
+            const h = modPow(g, x, p);
+            const c1 = modPow(g, k, p);
+            const c2 = (m * modPow(h, k, p)) % p;
+
+            const s = modPow(c1, x, p);
+            const sinv = modInverse(s, p);
+            const m_decrypted = (c2 * sinv) % p;
+
+            answers = { p, g, x, k, m, h, c1, c2, s, sinv, m_decrypted };
+
+            // Update UI for Q16
+            document.getElementById('q16_p').textContent = p;
+            document.getElementById('q16_g').textContent = g;
+            document.getElementById('q16_x').textContent = x;
+            document.getElementById('q16_k').textContent = k;
+            document.getElementById('q16_m').textContent = m;
+
+            // Update UI for Q17
+            document.getElementById('q17_p').textContent = p;
+            document.getElementById('q17_x').textContent = x;
+            document.getElementById('q17_c1').textContent = c1;
+            document.getElementById('q17_c2').textContent = c2;
+
+            // Clear inputs
+            document.querySelectorAll('input').forEach(input => input.value = '');
+            document.querySelectorAll('.feedback').forEach(fb => {
+                fb.className = 'feedback';
+                fb.textContent = '';
+            });
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function checkAnswer(inputId) {
+            const input = document.getElementById(inputId);
+            const feedback = document.getElementById(inputId + '_feedback');
+            
+            let correct = false;
+            let message = '';
+
+            switch(inputId) {
+                case 'q16_h':
+                    correct = parseInt(input.value) === answers.h;
+                    message = correct ? `✓ Correct! h = ${answers.h}` :
+                              `✗ Incorrect. h = g^x mod p = ${answers.g}^${answers.x} mod ${answers.p}`;
+                    break;
+                    
+                case 'q16_c1':
+                    correct = parseInt(input.value) === answers.c1;
+                    message = correct ? `✓ Correct! c₁ = ${answers.c1}` :
+                              `✗ Incorrect. c₁ = g^k mod p = ${answers.g}^${answers.k} mod ${answers.p}`;
+                    break;
+                    
+                case 'q16_c2':
+                    correct = parseInt(input.value) === answers.c2;
+                    message = correct ? `✓ Correct! c₂ = ${answers.c2}` :
+                              `✗ Incorrect. c₂ = m · h^k mod p = ${answers.m} · ${answers.h}^${answers.k} mod ${answers.p}`;
+                    break;
+                    
+                case 'q17_s':
+                    correct = parseInt(input.value) === answers.s;
+                    message = correct ? `✓ Correct! s = ${answers.s}` :
+                              `✗ Incorrect. s = c₁^x mod p = ${answers.c1}^${answers.x} mod ${answers.p}`;
+                    break;
+                    
+                case 'q17_sinv':
+                    correct = parseInt(input.value) === answers.sinv;
+                    message = correct ? `✓ Correct! s⁻¹ = ${answers.sinv}` :
+                              `✗ Incorrect. Find modular inverse of ${answers.s} mod ${answers.p}`;
+                    break;
+                    
+                case 'q17_m':
+                    correct = parseInt(input.value) === answers.m_decrypted;
+                    message = correct ? `✓ Correct! m = ${answers.m_decrypted} (matches original message!)` :
+                              `✗ Incorrect. m = c₂ · s⁻¹ mod p = ${answers.c2} · ${answers.sinv} mod ${answers.p}`;
+                    break;
+            }
+
+            feedback.className = 'feedback ' + (correct ? 'correct' : 'incorrect');
+            feedback.textContent = message;
+        }
+
+        function loadQuestion() {
+            currentQuestion = parseInt(document.getElementById('questionSelect').value);
+            document.querySelectorAll('.question-content').forEach(q => q.classList.add('hidden'));
+            document.getElementById('q' + currentQuestion).classList.remove('hidden');
+            document.getElementById('solution').classList.remove('show');
+        }
+
+        function toggleSolution() {
+            const sol = document.getElementById('solution');
+            sol.classList.toggle('show');
+            
+            if (sol.classList.contains('show')) {
+                let html = '<h3>📚 Detailed Solution:</h3>';
+                
+                if (currentQuestion === 16) {
+                    html += `
+                        <div class="step">
+                            <div class="step-title">Step 1: Compute Public Key</div>
+                            h = g^x mod p = ${answers.g}^${answers.x} mod ${answers.p} = ${answers.h}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 2: Encrypt - Compute c₁</div>
+                            c₁ = g^k mod p = ${answers.g}^${answers.k} mod ${answers.p} = ${answers.c1}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 3: Encrypt - Compute c₂</div>
+                            First: h^k = ${answers.h}^${answers.k} mod ${answers.p} = ${modPow(answers.h, answers.k, answers.p)}<br>
+                            Then: c₂ = m · h^k mod p = ${answers.m} · ${modPow(answers.h, answers.k, answers.p)} mod ${answers.p} = ${answers.c2}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Final Ciphertext</div>
+                            Ciphertext = (c₁, c₂) = (${answers.c1}, ${answers.c2})
+                        </div>`;
+                } else {
+                    html += `
+                        <div class="step">
+                            <div class="step-title">Step 1: Compute Shared Secret s</div>
+                            s = c₁^x mod p = ${answers.c1}^${answers.x} mod ${answers.p} = ${answers.s}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 2: Find Modular Inverse s⁻¹</div>
+                            Find s⁻¹ such that: s · s⁻¹ ≡ 1 (mod p)<br>
+                            ${answers.s} · ${answers.sinv} ≡ 1 (mod ${answers.p})<br>
+                            Verify: ${(answers.s * answers.sinv) % answers.p} ≡ 1 ✓
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Step 3: Decrypt Message</div>
+                            m = c₂ · s⁻¹ mod p = ${answers.c2} · ${answers.sinv} mod ${answers.p} = ${answers.m_decrypted}
+                        </div>
+                        <div class="step">
+                            <div class="step-title">Verification</div>
+                            Original message: ${answers.m}<br>
+                            Decrypted message: ${answers.m_decrypted}<br>
+                            <strong>${answers.m === answers.m_decrypted ? '✓ Decryption Successful!' : '✗ Error'}</strong>
+                        </div>`;
+                }
+                
+                sol.innerHTML = html;
+            }
+        }
+
+        generateNewProblem();
+        loadQuestion();
+    </script>
+</body>
+</html>
